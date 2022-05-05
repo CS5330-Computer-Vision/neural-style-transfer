@@ -37,6 +37,10 @@ class Vgg19(torch.nn.Module):
     # return features
 
 class ConvLayer(torch.nn.Module):
+  """
+  Convolution layer to retain the same size of the image by padding.
+  Different padding methods are supported.
+  """
   def __init__(self, in_channels, out_channels, kernel_size, stride):
     super(ConvLayer, self).__init__()
     reflection_padding = kernel_size // 2
@@ -50,6 +54,9 @@ class ConvLayer(torch.nn.Module):
 
 
 class ResidualBlock(torch.nn.Module):
+  """
+  Referenced from http://torch.ch/blog/2016/02/04/resnets.html
+  """
   def __init__(self, channels):
     super(ResidualBlock, self).__init__()
     self.conv1 = ConvLayer(channels, channels, kernel_size=3, stride=1)
@@ -67,6 +74,10 @@ class ResidualBlock(torch.nn.Module):
 
 
 class UpsampleConvLayer(torch.nn.Module):
+  """
+  Upsample ConvLayer to upscale the image with the given factor.
+  Different upsampling methods are supported.
+  """
   def __init__(self, in_channels, out_channels, kernel_size, stride, upsample=None):
     super(UpsampleConvLayer, self).__init__()
     self.upsample = upsample
@@ -82,6 +93,9 @@ class UpsampleConvLayer(torch.nn.Module):
 
 
 class BatchInstanceNorm2d(torch.nn.Module):
+  """
+  Conditional instance normalizaiton layers
+  """
   def __init__(self, style_num, in_channels):
     super(BatchInstanceNorm2d, self).__init__()
     self.inns = torch.nn.ModuleList([torch.nn.InstanceNorm2d(in_channels, affine=True) for i in range(style_num)])
@@ -92,6 +106,10 @@ class BatchInstanceNorm2d(torch.nn.Module):
 
 
 class TransformerNet(torch.nn.Module):
+  """
+  Initialize the Transformer Net object by conv layers, conditional instance normalization layers, residual blocks, and
+  upsampling layers.
+  """
   def __init__(self, style_num):
     super(TransformerNet, self).__init__()
     self.conv1 = ConvLayer(3, 32, kernel_size=9, stride=1)

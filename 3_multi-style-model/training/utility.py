@@ -1,3 +1,6 @@
+"""
+The utility functions to load the image, show the image pair, and do the transformation.
+"""
 import torch
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -53,6 +56,10 @@ def transform_net_imshow_pair(original_image, output_image, original_title=None,
   plt.show()
 
 def gram_matrix(y):
+  """
+  Compute the gram matrix for the given image/image batch.
+  :param y: The given image or image batch.
+  """
   (b, ch, h, w) = y.size()
   features = y.view(b, ch, w * h)
   features_t = features.transpose(1, 2)
@@ -60,7 +67,12 @@ def gram_matrix(y):
   return gram
 
 def normalize_batch(batch):
-  # normalize using imagenet mean and std
+  """
+  Normalize the batch from the output of the transformer net,
+  so that it fits the VGG input format, which assumes the image with values
+  between 0 and 1.
+  :param batch: The image batch to be normalized.
+  """
   mean = batch.new_tensor([0.485, 0.456, 0.406]).view(-1, 1, 1)
   std = batch.new_tensor([0.229, 0.224, 0.225]).view(-1, 1, 1)
   batch = batch.div_(255.0)

@@ -8,7 +8,15 @@ from torch.utils.data import Dataset
 from utility import transform_net_load_image
 
 class COCODataset(Dataset):
+  """
+  The customized dataset for the COCO data.
+  """
   def __init__(self, image_directory, transform=None):
+    """
+    Initialize the COCODataset object with the given data directory, and transformer.
+    :param image_directory: The directory to the images
+    :param transform: The transformer
+    """
     self.image_names = []
     self.image_directory = image_directory
     self.transform = transform

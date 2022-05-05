@@ -1,16 +1,14 @@
+"""
+The utility functions to load the image, show the image, do the transformation and save results locally.
+"""
+
 import torch
 from PIL import Image
 import matplotlib.pyplot as plt
 from net import TransformerNet
 
+# load image given a path
 def transform_net_load_image(filename, size=None, scale=None):
-  """
-  Load the image by the given filename. The image would be resized if size or scale is set. 
-
-  :param size: New size of the image
-  :param scale: The scale ratio to resize the image
-  :return: The resized image
-  """
   image = Image.open(filename).convert('RGB')
   target_size = image.size
   if size is not None:
@@ -20,9 +18,8 @@ def transform_net_load_image(filename, size=None, scale=None):
 
   return image.resize(target_size, Image.ANTIALIAS)
 
-
+# show image given a pth
 def transform_net_imshow(image, title=None):
-  # print(f'The size of the given image: {image.size()}')
   with torch.no_grad():
     image = image.cpu().clone().clamp(0, 255).numpy()
     image = image.transpose(1, 2, 0).astype('uint8')
@@ -36,6 +33,7 @@ def transform_net_imshow(image, title=None):
   plt.yticks([])
   plt.show()
 
+# get model from the given path with the number of style images with which the model is trained
 def get_transformer_net_model(model_path, style_num):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = TransformerNet(style_num=style_num)
@@ -46,8 +44,7 @@ def get_transformer_net_model(model_path, style_num):
 
     return model
 
-# save image
-
+# save image to the given path
 def save_image(filename, data):
     img = data.clone().clamp(0, 255).numpy()
     img = img.transpose(1, 2, 0).astype("uint8")

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-
-This file is training the multi-style model
-
+This file is the main entry for training the multi-style model
 """
 
 import os
 import torch
+import sys
 import matplotlib.pyplot as plt
 from torch.optim import Adam
 from torch.utils.data import DataLoader
@@ -19,7 +18,8 @@ from net import TransformerNet, Vgg19
 # set device to gpu or cpu based on availability
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-def train(style_folder_path="image/", 
+def train(path = 'model.pth',
+          style_folder_path="image/", 
           dataset_path="./train2017", 
           image_size=256,
           style_size=512, 
@@ -76,7 +76,6 @@ def train(style_folder_path="image/",
   epoch_start = 0
 
   # Load pre-trained model
-  path = './drive/MyDrive/checkpoints/model.pth'
   checkpoint = torch.load(path)
   transformer_net.load_state_dict(checkpoint['model_state_dict'])
   optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
@@ -141,7 +140,6 @@ def train(style_folder_path="image/",
         image_count_index.append(total_image_count)
 
         # saves the model checkpoint
-        path = './drive/MyDrive/checkpoints/model.pth'
         torch.save({
             'epoch': epoch,
             'model_state_dict': transformer_net.state_dict(),
@@ -151,7 +149,6 @@ def train(style_folder_path="image/",
             'count_index': image_count_index
             }, path)
     
-    path = './drive/MyDrive/checkpoints/model.pth'
     torch.save({
         'epoch': epoch,
         'model_state_dict': transformer_net.state_dict(),
@@ -171,6 +168,8 @@ def train(style_folder_path="image/",
   plt.show()
 
 if __name__ == '__main__':
-  train() # 1nd epoch
+  model_path = sys.argv[1]
+  style_folder_path = sys.argv[2]
+  dataset_path = sys.argv[3]
 
-  train() # 2st epoch
+  train(path=model_path, style_folder_path=style_folder_path, dataset_path=dataset_path)

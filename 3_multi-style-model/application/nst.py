@@ -1,9 +1,18 @@
+"""
+The main entry for evaluating this multi-style model.
+"""
 import torch
+import sys
 from torchvision import transforms
 from utility import *
 
+# set device to gpu or cpu based on availability
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 def stylize(image, model, input_style_id):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    """
+    apply trained style transfer model to a content image given a style image we used during training
+    """
     content_transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Lambda(lambda x: x.mul(255))
@@ -17,15 +26,15 @@ def stylize(image, model, input_style_id):
     transform_net_imshow(output[0], 'style' + str(input_style_id))
     save_image('./output/' +'_style'+str(input_style_id)+'.jpg', output[0])
 
+
 if __name__ == '__main__':
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    
-    style_num = 4
-    model_path = '../training/model.pth'
-    output_path = './output/'
+    model_path =  sys.argv[1]
+    output_path = sys.argv[2]
+    style_num = int(sys.argv[3])
+    content_image_path = sys.argv[4]
     transformer_net = TransformerNet(style_num=style_num).to(device)
-    checkpoint = torch.load(model_path)
+    checkpoint = torch.load(model_path, map_location=device)
     transformer_net.load_state_dict(checkpoint['model_state_dict'])
-    content_image = transform_net_load_image('./eval/test.jpeg')
+    content_image = transform_net_load_image(content_image_path)
     for i in range(style_num):
         stylize(content_image, transformer_net, i)
