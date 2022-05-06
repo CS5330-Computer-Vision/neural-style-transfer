@@ -1,5 +1,4 @@
 """
-Kumar Anupam
 VGG-19 network customized for NST.
 """
 

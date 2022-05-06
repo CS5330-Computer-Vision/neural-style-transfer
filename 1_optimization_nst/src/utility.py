@@ -1,5 +1,4 @@
 """
-Kumar Anupam
 Utility functions for NST.
 """
 
