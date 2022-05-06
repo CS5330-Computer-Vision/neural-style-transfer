@@ -1,5 +1,4 @@
 """
-Kumar Anupam
 Explored different layers of VGG-19 network for NST.
 """
 
